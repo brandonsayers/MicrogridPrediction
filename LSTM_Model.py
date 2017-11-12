@@ -3,6 +3,8 @@
 Created on Mon Jan  2 12:46:39 2017
 
 @author: rob
+
+https://github.com/RobRomijnders/LSTM_tsc.git
 """
 
 """

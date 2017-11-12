@@ -10,11 +10,11 @@ import numpy as np
 import tensorflow as tf  #TF 1.1.0rc1
 tf.logging.set_verbosity(tf.logging.ERROR)
 import matplotlib.pyplot as plt
-from tsc_model import Model,sample_batch,load_data#,check_test
+from LSTM_Model import Model,sample_batch,load_data#,check_test
 
 #Set these directories
-direc = 'data'
-summaries_dir = 'LSTM_TSC/log_tb'
+direc = """prodData"""
+summaries_dir = 'LSTM_LOG/log_tb'
 
 """Load the data"""
 ratio = np.array([0.8,0.9]) #Ratios where to split the training and validation set

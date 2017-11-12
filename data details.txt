@@ -1,0 +1,7 @@
+test contains 4500 instances - time series
+<power generated (y)> , <temperature>, <windDir>, <windAmp>
+Min value from the current data set for power generated is 22. 
+
+All power labels have been subtracted by 22 (the smallest power label) to fit the constraints of the softmax. 
+There are some labels that exceed 45 even after subtracting 22, those values are automatically
+set to 45 ( the max possible value) 
