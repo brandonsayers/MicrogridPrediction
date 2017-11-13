@@ -1,7 +1,34 @@
-test contains 4500 instances - time series
-<power generated (y)> , <temperature>, <windDir>, <windAmp>
-Min value from the current data set for power generated is 22. 
+Data is ommitted from repo.
 
-All power labels have been subtracted by 22 (the smallest power label) to fit the constraints of the softmax. 
-There are some labels that exceed 45 even after subtracting 22, those values are automatically
-set to 45 ( the max possible value) 
+IMPORTANT:
+	* Be sure that all data is removed from the directory before pushing any updates to github. 
+	* When incorporating new data, you may have trouble with the range of the classification. 
+		In order to mediate such problems, the num of classifications calculation might need 
+		to be modified. It is located in control_LSTM under the intiData function. 
+		OR search for "num_classes" 
+
+HOW TO:
+	incorporate data, create a folder titled "prodData" at the same level of this document. 
+
+	Contents of folder should look like the following:
+	prodData -
+		/powerGeneratedWindTurbine -
+			/powerGeneratedWindTurbine_TEST
+			/powerGeneratedWindTurbine_TRAIN
+
+	To change the names, two variables in main.py  must be changed. 
+	Look under the getFileInfo() that lives under the mainCTRL class. 
+	There you will see a dictionary that defines the directory ("prodData")
+	and the dataTargets ("powerGeneratedWindTurbine") - in this example we only have one data target
+
+	The getFileInfo() needs modification so that other libraries can pass in file 
+	info attrtibutes. This will be a crucial step when we want to integrate multiple models
+
+About le current (Nov 12,2017) data:
+	test contains 5000 instances - time series
+	<power generated (y)> , <temperature>, <windDir>, <windAmp>
+	Min value from the current data set for power generated is 22. 
+
+	All power labels have been subtracted by 22 (the smallest power label) to fit the constraints of the softmax. 
+	There are some labels that exceed 45 even after subtracting 22, those values are automatically
+	set to 45 ( the max possible value) 

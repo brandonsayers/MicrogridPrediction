@@ -1,9 +1,8 @@
 """
-LSTM for time series classification
+Controller for LSTM_Model
 
-This model takes in time series and class labels.
-The LSTM models the time series. A fully-connected layer
-generates an output to be classified with Softmax
+This controller acts as an API to the LSTM model.
+Full lstm Hyperparamaters and data source configuration is featured below.
 """
 
 import numpy as np
@@ -12,22 +11,22 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 import matplotlib.pyplot as plt
 from LSTM.LSTM_Model import Model,sample_batch,load_data#,check_test
 
-
-
-
+# Rocco haro
 #Set these directories
 class control_LSTM(object):
     def __init__(self, *args):
         """ Example on how to use class below under __name__ is __main__ stmt
         """
         try:
-            self.direc = """prodData"""
+            fileInfo = args[0]
+            self.direc = fileInfo['direc']
+            self.dataSetTarget = fileInfo['dataTarget']
             self.summaries_dir = 'LSTM_LOG/log_tb'
             self.data = dict()
             self.configPrep = dict()
             self.configLSTM = None
             self.epochs = None
-        except:
+        except: # rocco haro
             self.failureMessage(0)
             quit()
 
@@ -35,22 +34,25 @@ class control_LSTM(object):
         """ Continue to build upon this function whenever there areas that can fail.
         """
         def quittingM():
-            print("=== control_LSTM says | Now quitting. Goodbye.")
+            print("=== control_LSTM says | Now quitting...")
+            print("Adios.")
 
         if errorCode == 0:
-            print("=== control_LSTM says | Failure to initialize due to input. Not enough args, perhaps.")
+            print("=== control_LSTM says | Failure to initialize due to input. The following may have occured:")
+            print("    (1) Not enough args;")
+            print("    (2) Keys initialized in the mainCtrl class do not match keys referenced in this class.")
             quittingM()
         elif errorCode == 1:
             print("""=== control_LSTM says | Failure to load data. You probably forgot
                     to place the data directory within the current working dir. """)
-            quittingM()
+            quittingM() # rico haro
 
     def initData(self, *args):
         print("=== control_LSTM says | initializing data...")
         try:
             """Load the data"""
             ratio = np.array([0.8,0.9]) #Ratios where to split the training and validation set
-            X_train,X_val,X_test,y_train,y_val,y_test = load_data(self.direc,ratio,dataset='powerGeneratedWindTurbine')
+            X_train,X_val,X_test,y_train,y_val,y_test = load_data(self.direc,ratio,dataset=self.dataSetTarget)
             self.data['X_train'] = X_train
             self.data['X_val'] = X_val
             self.data['X_test'] = X_test
@@ -59,7 +61,7 @@ class control_LSTM(object):
             self.data['y_test'] = y_test
 
             N,sl = X_train.shape
-            self.configPrep['N'] = N
+            self.configPrep['N'] = N # roko haro
             self.configPrep['sl'] = sl
 
             #print("***** N, SL: ", N,sl)
@@ -67,6 +69,7 @@ class control_LSTM(object):
             self.configPrep['num_classes'] = num_classes
             print("Done loading data.")
         except:
+            print("!! control_LSTM.initData discourse. Attention required: ")
             self.failureMessage(1)
             quit()
 
@@ -82,7 +85,7 @@ class control_LSTM(object):
                       'batch_size' :    self.data['batch_size'],
                       'learning_rate' : mu,
                       'sl':             self.configPrep['sl'],
-                      'num_classes':    self.configPrep['num_classes']}
+                      'num_classes':    self.configPrep['num_classes']}# rocco haro
 
         self.configLSTM['epochs']  = np.floor(self.data['batch_size']*self.configPrep['max_iterations'] / self.configPrep['N'])
         print('Train %.0f samples in approximately %d epochs' %(self.configPrep['N'],self.configLSTM['epochs']))
@@ -104,20 +107,8 @@ class control_LSTM(object):
         acc_train_ma = 0.0
         try:
           for i in range(self.configPrep['max_iterations']):
-            X_batch, y_batch = sample_batch(self.data['X_train'],self.data['y_train'], self.data['batch_size'])
-            #print("X_batch: ", X_batch)
-            #print("y_batch: ", y_batch)
-            #Next line does the actual training
-            # print("model.cost: ", model.cost)
-            # print("model.accuracy: ", model.accuracy)
-            # print("model.train_op: ", model.train_op)
-            # print("*****")
-            # print("model.input: ", model.input)
-            # print("X_batch: ", X_batch)
-            # print("model.labels: ", model.labels)
-            # print("y_batch: ", y_batch)
-            #print(sess.run([model.cost,model.accuracy, model.train_op],feed_dict = {model.input: X_batch,model.labels: y_batch,model.keep_prob:dropout}))
-            #z=raw_input()
+            X_batch, y_batch = sample_batch(self.data['X_train'],self.data['y_train'], self.data['batch_size']) # roko haro
+
             cost_train, acc_train,_ = sess.run([model.cost,model.accuracy, model.train_op],feed_dict = {model.input: X_batch,model.labels: y_batch,model.keep_prob:self.configPrep['dropout']})
             #print("cost_train: ", cost_train)
             #print("acc_train: ", acc_train)
@@ -150,7 +141,7 @@ class control_LSTM(object):
         """ (1) Run a specific model and pair it with a stream of data
             for online applications.
             (2) if no modelTarget specified, or none exist, create one.
-        """
+        """ # rocco haro
         def loadModel(modelTarget):
             """ returns a sess object
             """
@@ -177,7 +168,7 @@ class control_LSTM(object):
                 ready = True
 
         if modelTarget == "create":
-            print("=== control_LSTM says | Beginning creation of new model...")
+            print("=== control_LSTM says | Beginning creation of new model...") # rico haro
             self.initAndBuildModel()
 
         else:
@@ -194,11 +185,14 @@ class control_LSTM(object):
         """ initializes the model and starts it.
         """
         self.initData()
-        self.configureLSTM() # batch_size=300, max_iterations=1000, dropout=0.8, num_layers=3, hidden_size=120, max_grad_norm=3, mu=0.005 )
+        # TODO unwrap the dictionary here and pass its contents into the
+        # configureLSTM function.
+        self.configureLSTM() # NOTE paramater format: batch_size=300, max_iterations=1000, dropout=0.8, num_layers=3, hidden_size=120, max_grad_norm=3, mu=0.005 )
         self.buildModel()
 
 if __name__ == "__main__":
-    freshLstm = control_LSTM("direc Where Data Is", "Where to log files")
+    fileInfo = {'direc': prodData, 'dataTarget': powerGeneratedWindTurbine}
+    freshLstm = control_LSTM(fileInfo)
     lstmConfigOptions = {batch_size: 300, max_iterations: 1000, dropout: 0.8, num_layers: 3, hidden_size: 120, max_grad_norm:3, mu:0.005 }
     freshLstm.initAndBuildModel(lstmConfigOptions)
 #now run in your terminal:
