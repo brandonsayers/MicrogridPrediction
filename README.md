@@ -1,3 +1,6 @@
+# Versions
+* Tensorflow v1.1
+
 # Power-Prediction
 Produce a temporal prediction of overall substation power generation & consumption.
 
@@ -35,3 +38,7 @@ Report for each substation:
   * Pull any additional data we may need
   * Angle of the sun
   * Utilize momentum in calculations (SMA for the previous hours leading up to the estimation time)
+
+# Credits
+* For lstm model: https://github.com/RobRomijnders/LSTM_tsc
+
